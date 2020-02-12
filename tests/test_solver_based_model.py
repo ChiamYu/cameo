@@ -535,15 +535,15 @@ class TestReaction(object):
             assert core_model.solver.constraints['test'].expression.has(66. * reaction.reverse_variable)
             already_included_metabolite = list(reaction.metabolites.keys())[0]
             previous_coefficient = reaction.get_coefficient(
-                already_included_metabolite.id)
+                already_included_metabolite.id)            
             reaction.add_metabolites({already_included_metabolite: 10},
                                      combine=True)
             new_coefficient = previous_coefficient + 10
             assert reaction.metabolites[already_included_metabolite] == new_coefficient
             assert core_model.solver.constraints[already_included_metabolite.id].expression.has(
-                new_coefficient * reaction.forward_variable)
+                1.0 * new_coefficient * reaction.forward_variable)
             assert core_model.solver.constraints[already_included_metabolite.id].expression.has(
-                -1 * new_coefficient * reaction.reverse_variable)
+                -1.0 * new_coefficient * reaction.reverse_variable)
 
     @pytest.mark.skipif(TRAVIS, reason='non-deterministic')
     def test_add_metabolites_combine_false(self, core_model):
@@ -557,9 +557,9 @@ class TestReaction(object):
             reaction.add_metabolites({already_included_metabolite: 10}, combine=False)
             assert reaction.metabolites[already_included_metabolite] == 10
             assert core_model.solver.constraints[already_included_metabolite.id].expression.has(
-                10 * reaction.forward_variable)
+                10.0 * reaction.forward_variable)
             assert core_model.solver.constraints[already_included_metabolite.id].expression.has(
-                -10 * reaction.reverse_variable)
+                -10.0 * reaction.reverse_variable)
 
     # def test_pop(self, core_model):
     #     pgi = core_model.reactions.PGI
